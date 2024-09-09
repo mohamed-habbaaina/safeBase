@@ -15,6 +15,8 @@ func main() {
 
 	router.GET("/albums", getAlbums)
 
+	router.POST("/albums", postAlbums)
+
 	router.Run("localhost:8083")
 }
 
@@ -27,6 +29,19 @@ type album struct {
 
 func getAlbums(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, albums)
+}
+
+func postAlbums(c *gin.Context) {
+	var newAlbum album
+
+	// error handling
+	if err := c.BindJSON(&newAlbum); err != nil {
+		return
+	}
+
+	// Add the new album to the slice.
+	albums = append(albums, newAlbum)
+	c.IndentedJSON(http.StatusCreated, newAlbum)
 }
 
 var albums = []album{
